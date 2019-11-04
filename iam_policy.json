@@ -1,0 +1,25 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "ses:SendRawEmail"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${bucket_name}/*",
+                "arn:aws:ses:${region}:${account_id}:identity/*"
+            ]
+        }
+    ]
+}

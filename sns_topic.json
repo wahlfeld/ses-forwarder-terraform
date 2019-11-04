@@ -1,0 +1,22 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "EmailSNSTopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "DisplayName": "${sns_display_name}",
+                "Subscription": [
+                    ${subscription}
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "ARN": {
+            "Description": "Email SNS Topic ARN",
+            "Value": {
+                "Ref": "EmailSNSTopic"
+            }
+        }
+    }
+}
