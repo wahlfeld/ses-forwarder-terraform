@@ -31,7 +31,7 @@ var defaultConfig = {
   fromEmail: "",
   subjectPrefix: "",
   emailBucket: "wahlfeld-ses-forwarder-python-dev",
-  emailKeyPrefix: "dev/",
+  emailKeyPrefix: "dev-python/",
   forwardMapping: {
     "dev@wahlfeld.co": [
       "cschwarzwahlfeld@gmail.com"

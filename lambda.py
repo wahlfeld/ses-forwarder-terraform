@@ -19,12 +19,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
-region = os.environ['Region']
+region = os.environ['region']
 
 def get_message_from_s3(message_id):
 
-    incoming_email_bucket = os.environ['MailS3Bucket']
-    incoming_email_prefix = os.environ['MailS3Prefix']
+    incoming_email_bucket = os.environ['bucket_name']
+    incoming_email_prefix = os.environ['mail_s3_prefix']
 
     if incoming_email_prefix:
         object_path = (incoming_email_prefix + "/" + message_id)
@@ -51,8 +51,8 @@ def get_message_from_s3(message_id):
 
 def create_message(file_dict):
 
-    sender = os.environ['MailSender']
-    recipient = os.environ['MailRecipient']
+    sender = os.environ['mail_sender']
+    recipient = os.environ['mail_recipient']
 
     separator = ";"
 
@@ -125,18 +125,22 @@ def send_email(message):
 
     return output
 
-def lambda_handler(event, context):
+def handler(event, context):
     # Get the unique ID of the message. This corresponds to the name of the file
     # in S3.
+    print(f"Getting message ID...")
     message_id = event['Records'][0]['ses']['mail']['messageId']
     print(f"Received message ID {message_id}")
 
+    print(f"Retrieving file from S3...")
     # Retrieve the file from the S3 bucket.
     file_dict = get_message_from_s3(message_id)
 
+    print(f"Creating message...")
     # Create the message.
     message = create_message(file_dict)
 
+    print(f"Forwarding email...")
     # Send the email and print the result.
     result = send_email(message)
     print(result)

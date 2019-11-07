@@ -71,15 +71,14 @@ resource "aws_lambda_function" "ses_forwarder" {
   filename      = "lambda.zip"
   function_name = "${var.lambda_name}"
   role          = "${aws_iam_role.lambda_iam_role.arn}"
-  # handler          = "lambda_function.lambda_handler"
-  handler          = "index.handler"
+  handler       = "lambda.handler"
   source_code_hash = "${filebase64sha256("lambda.zip")}"
-  runtime          = "nodejs8.10"
-  timeout          = 30
+  runtime          = "python3.7"
+  timeout = 30
 
   environment {
     variables = {
-      mail_s3_bucket = "${var.bucket_name}",
+      bucket_name = "${var.bucket_name}",
       mail_s3_prefix = "${var.mail_s3_prefix}",
       mail_sender    = "${var.mail_sender}",
       mail_recipient = "${var.mail_recipient}",
@@ -122,7 +121,6 @@ resource "aws_ses_receipt_rule" "dev_rule" {
   recipients    = ["${var.mail_recipient}"]
   enabled       = true
   scan_enabled  = true
-  after         = "dev-email"
 
   add_header_action {
     header_name  = "Custom-Header"

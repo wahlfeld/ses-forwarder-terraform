@@ -9,6 +9,6 @@ variable "mail_recipient" {}
 variable "sns_display_name" {}
 variable "sns_email_address" {}
 variable "sns_protocol" {
-    default = "email"
+  default = "email"
 }
 variable "sns_stack_name" {}
