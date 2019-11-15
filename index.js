@@ -27,14 +27,17 @@ console.log("AWS Lambda SES Forwarder // @arithmetric // Version 4.2.0");
 //
 //   To match a mailbox name on all domains, use a key without the "at" symbol
 //   and domain part of an email address (i.e. `info`).
+
+var mailFrom = process.env.mail_from;
+
 var defaultConfig = {
   fromEmail: "",
   subjectPrefix: "",
-  emailBucket: "wahlfeld-ses-forwarder-python-dev",
-  emailKeyPrefix: "dev-python/",
+  emailBucket: process.env.bucket_name,
+  emailKeyPrefix: process.env.mail_s3_prefix,
   forwardMapping: {
-    "dev@wahlfeld.co": [
-      "cschwarzwahlfeld@gmail.com"
+    [mailFrom]: [
+      process.env.mail_to
     ]
   }
 };

@@ -67,21 +67,21 @@ data "template_file" "iam_policy" {
 }
 
 resource "aws_lambda_function" "ses_forwarder" {
-  depends_on    = [aws_iam_role.lambda_iam_role]
-  filename      = "lambda.zip"
-  function_name = "${var.lambda_name}"
-  role          = "${aws_iam_role.lambda_iam_role.arn}"
-  handler       = "lambda.handler"
+  depends_on       = [aws_iam_role.lambda_iam_role]
+  filename         = "lambda.zip"
+  function_name    = "${var.lambda_name}"
+  role             = "${aws_iam_role.lambda_iam_role.arn}"
+  handler          = "index.handler"
   source_code_hash = "${filebase64sha256("lambda.zip")}"
-  runtime          = "python3.7"
-  timeout = 30
+  runtime          = "nodejs10.x"
+  timeout          = 30
 
   environment {
     variables = {
-      bucket_name = "${var.bucket_name}",
+      bucket_name    = "${var.bucket_name}",
       mail_s3_prefix = "${var.mail_s3_prefix}",
-      mail_sender    = "${var.mail_sender}",
-      mail_recipient = "${var.mail_recipient}",
+      mail_from      = "${var.mail_from}",
+      mail_to        = "${var.mail_to}",
       region         = "${var.region}"
     }
   }
@@ -116,9 +116,9 @@ resource "aws_ses_receipt_rule" "dev_rule" {
     aws_lambda_function.ses_forwarder,
     aws_lambda_permission.allow_ses
   ]
-  name          = "dev-email-python"
-  rule_set_name = "wahlfeld-email"
-  recipients    = ["${var.mail_recipient}"]
+  name          = "${var.ses_rule_name}"
+  rule_set_name = "${var.ses_set_name}"
+  recipients    = ["${var.ses_mail_recipient}"]
   enabled       = true
   scan_enabled  = true
 
@@ -130,7 +130,7 @@ resource "aws_ses_receipt_rule" "dev_rule" {
 
   s3_action {
     bucket_name       = "${var.bucket_name}"
-    object_key_prefix = "dev-python/"
+    object_key_prefix = "${var.mail_s3_prefix}"
     position          = 2
   }
 
