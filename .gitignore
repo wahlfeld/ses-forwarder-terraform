@@ -28,11 +28,5 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
-# Ignore .tfvars
-terraform.tfvars
-
-# Ignore folders
-*/
-
-# Ignore .zip files
-*.zip
+# Don't include zipped Lambda function
+/modules/resources/*.zip
