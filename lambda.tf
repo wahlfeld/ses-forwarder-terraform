@@ -48,7 +48,8 @@ resource "aws_lambda_function" "ses_forwarder" {
   handler          = "index.handler"
   source_code_hash = "${filebase64sha256(".terraform/modules/ses-forwarder-dev/resources/lambda.zip")}"
   runtime          = "nodejs10.x"
-  timeout          = 30
+  memory_size      = 256
+  timeout          = 15
 
   environment {
     variables = {
