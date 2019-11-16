@@ -78,13 +78,17 @@ resource "aws_lambda_function" "ses_forwarder" {
 
   environment {
     variables = {
-      bucket_name    = "${var.bucket_name}",
-      mail_s3_prefix = "${var.mail_s3_prefix}",
-      mail_from      = "${var.mail_from}",
-      mail_to        = "${var.mail_to}",
-      region         = "${var.region}"
+      bucket_name        = "${var.bucket_name}",
+      mail_s3_prefix     = "${var.mail_s3_prefix}",
+      ses_mail_recipient = "${var.ses_mail_recipient}",
+      lambda_recipient   = "${var.lambda_recipient}",
+      region             = "${var.region}"
     }
   }
+}
+
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name              = "/aws/lambda/${var.lambda_name}"
 }
 
 resource "aws_lambda_permission" "allow_ses" {
@@ -103,10 +107,10 @@ data "template_file" "cloudformation_sns_stack" {
   }
 }
 resource "aws_cloudformation_stack" "sns_topic" {
-  name          = "${var.sns_stack_name}"
+  name          = "${var.lambda_name}"
   template_body = "${data.template_file.cloudformation_sns_stack.rendered}"
   tags = "${merge(
-    map("Name", "${var.sns_stack_name}")
+    map("Name", "${var.lambda_name}")
   )}"
 }
 
@@ -140,4 +144,32 @@ resource "aws_ses_receipt_rule" "dev_rule" {
     position        = 3
 
   }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "lambda_metric_filter" {
+  name           = "${var.cloudwatch_metric}"
+  pattern        = "error"
+  log_group_name = "${aws_cloudwatch_log_group.lambda_log_group.name}"
+
+  metric_transformation {
+    name      = "${var.cloudwatch_metric}"
+    namespace = "LogMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "ses-forwarder-alarm" {
+  depends_on          = [aws_cloudformation_stack.sns_topic]
+  alarm_name          = "ses-forwarder-alarm-dev"
+  alarm_description   = "Alarm for when errors occur in ses-forwarder function."
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "${aws_cloudwatch_log_metric_filter.lambda_metric_filter.name}"
+  namespace           = "LogMetrics"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "0"
+  datapoints_to_alarm = "1"
+  treat_missing_data  = "notBreaching"
+  alarm_actions       = ["${aws_cloudformation_stack.sns_topic.outputs["ARN"]}"]
 }
