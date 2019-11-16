@@ -14,3 +14,4 @@ variable "sns_protocol" {
   default = "email"
 }
 variable "cloudwatch_metric" {}
+variable "cloudwatch_alarm" {}

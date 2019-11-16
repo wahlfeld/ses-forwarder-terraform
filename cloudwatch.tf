@@ -12,7 +12,7 @@ resource "aws_cloudwatch_log_metric_filter" "lambda_metric_filter" {
 
 resource "aws_cloudwatch_metric_alarm" "ses-forwarder-alarm" {
   depends_on          = [aws_cloudformation_stack.sns_topic]
-  alarm_name          = "ses-forwarder-alarm-dev"
+  alarm_name          = "${var.cloudwatch_alarm}"
   alarm_description   = "Alarm for when errors occur in ses-forwarder function."
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"

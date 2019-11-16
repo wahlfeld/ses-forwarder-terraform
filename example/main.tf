@@ -18,4 +18,5 @@ module "ses-forwarder-dev" {
   sns_display_name   = "${var.sns_display_name}"
   sns_email_address  = "${var.sns_email_address}"
   cloudwatch_metric  = "${var.cloudwatch_metric}"
+  cloudwatch_alarm   = "${var.cloudwatch_alarm}"
 }
