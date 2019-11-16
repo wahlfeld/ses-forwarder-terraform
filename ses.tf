@@ -25,22 +25,16 @@ resource "aws_ses_receipt_rule" "dev_rule" {
   enabled       = true
   scan_enabled  = true
 
-  add_header_action {
-    header_name  = "Custom-Header"
-    header_value = "Added by SES"
-    position     = 1
-  }
-
   s3_action {
     bucket_name       = "${var.bucket_name}"
     object_key_prefix = "${var.mail_s3_prefix}"
-    position          = 2
+    position          = 1
   }
 
   lambda_action {
     function_arn    = aws_lambda_function.ses_forwarder.arn
     invocation_type = "Event"
-    position        = 3
+    position        = 2
 
   }
 }
