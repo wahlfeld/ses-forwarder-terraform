@@ -1,4 +1,4 @@
 Package up Lambda function:
 
-`zip -r ./modules/resources/lambda.zip ./modules/resources/index.js `
+`cd ./.terraform/modules/ses-forwarder-dev/resources/ && zip -r lambda.zip index.js`
 

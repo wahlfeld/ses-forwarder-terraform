@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 data "template_file" "bucket_policy" {
-  template = "${file("modules/resources/bucket_policy.json")}"
+  template = "${file(".terraform/modules/ses-forwarder-dev/resources/bucket_policy.json")}"
   vars = {
     account_id  = "${var.account_id}"
     bucket_name = "${var.bucket_name}"

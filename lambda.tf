@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "iam_policy_attachment" {
 }
 
 data "template_file" "iam_policy" {
-  template = "${file("modules/resources/iam_policy.json")}"
+  template = "${file(".terraform/modules/ses-forwarder-dev/resources/iam_policy.json")}"
   vars = {
     account_id       = "${var.account_id}"
     region           = "${var.region}"
@@ -42,11 +42,11 @@ data "template_file" "iam_policy" {
 
 resource "aws_lambda_function" "ses_forwarder" {
   depends_on       = [aws_iam_role.lambda_iam_role]
-  filename         = "modules/resources/lambda.zip"
+  filename         = ".terraform/modules/ses-forwarder-dev/resources/lambda.zip"
   function_name    = "${var.lambda_name}"
   role             = "${aws_iam_role.lambda_iam_role.arn}"
   handler          = "index.handler"
-  source_code_hash = "${filebase64sha256("modules/resources/lambda.zip")}"
+  source_code_hash = "${filebase64sha256(".terraform/modules/ses-forwarder-dev/resources/lambda.zip")}"
   runtime          = "nodejs10.x"
   timeout          = 30
 
