@@ -63,7 +63,7 @@ resource "aws_lambda_function" "ses_forwarder" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name              = "/aws/lambda/${var.lambda_name}"
+  name = "/aws/lambda/${var.lambda_name}"
 }
 
 resource "aws_lambda_permission" "allow_ses" {
