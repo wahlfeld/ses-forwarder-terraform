@@ -40,9 +40,15 @@ data "template_file" "iam_policy" {
   }
 }
 
+# data "archive_file" "init" { // todo
+#   type        = "zip"
+#   source_file = "${path.module}/init.tpl"
+#   output_path = "${path.module}/files/init.zip"
+# }
+
 resource "aws_lambda_function" "ses_forwarder" {
   depends_on       = [aws_iam_role.lambda_iam_role]
-  filename         = file("${path.module}/resources/lambda.zip")
+  filename         = file("${path.module}/resources/lambda.zip") // data.archive_file.lambda.output_path
   function_name    = var.lambda_name
   role             = aws_iam_role.lambda_iam_role.arn
   handler          = "index.handler"
