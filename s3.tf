@@ -1,8 +1,8 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "${var.bucket_name}"
-  region = "${var.region}"
+  bucket = var.bucket_name
+  region = var.region
   acl    = "private"
-  policy = "${data.template_file.bucket_policy.rendered}"
+  policy = data.template_file.bucket_policy.rendered
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -13,9 +13,9 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 data "template_file" "bucket_policy" {
-  template = "${file(".terraform/modules/ses-forwarder-dev/resources/bucket_policy.json")}"
+  template = file("${path.module}/resources/bucket_policy.json")
   vars = {
-    account_id  = "${var.account_id}"
-    bucket_name = "${var.bucket_name}"
+    account_id  = var.account_id
+    bucket_name = var.bucket_name
   }
 }
