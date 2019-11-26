@@ -31,7 +31,6 @@ Source: https://medium.com/@ashan.fernando/forwarding-emails-to-your-inbox-using
 
 * The steps above will set up a serverless mailbox for one email. You can copy and paste the example folder and repeat the steps to create multiple mailboxes (make sure your change the Terraform backend key).
 * The `sns_email_address` variable is the email where error notifications will be sent to, so if you're administering several mailboxes you would keep this address the same for each one.
-* The Lambda function is pre-zipped in the /resources folder. If you want to make any changes to the code you need to remember to re-zip it.
 
 ## Limitations
 
