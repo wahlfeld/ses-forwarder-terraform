@@ -10,6 +10,15 @@ resource "aws_s3_bucket" "bucket" {
       }
     }
   }
+  lifecycle_rule {
+    id      = "two-week-retention"
+    prefix  = var.mail_s3_prefix
+    enabled = true
+
+    expiration {
+      days = 14
+    }
+  }
 }
 
 data "template_file" "bucket_policy" {

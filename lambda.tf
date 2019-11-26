@@ -40,19 +40,19 @@ data "template_file" "iam_policy" {
   }
 }
 
-# data "archive_file" "init" { // todo
-#   type        = "zip"
-#   source_file = "${path.module}/init.tpl"
-#   output_path = "${path.module}/files/init.zip"
-# }
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/resources/index.js"
+  output_path = "${path.module}/resources/lambda.zip"
+}
 
 resource "aws_lambda_function" "ses_forwarder" {
   depends_on       = [aws_iam_role.lambda_iam_role]
-  filename         = file("${path.module}/resources/lambda.zip") // data.archive_file.lambda.output_path
+  filename         = data.archive_file.lambda_zip.output_path
   function_name    = var.lambda_name
   role             = aws_iam_role.lambda_iam_role.arn
   handler          = "index.handler"
-  source_code_hash = filebase64sha256("${path.module}/resources/lambda.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "nodejs10.x"
   memory_size      = 256
   timeout          = 30
@@ -69,7 +69,8 @@ resource "aws_lambda_function" "ses_forwarder" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name = "/aws/lambda/${var.lambda_name}"
+  name              = "/aws/lambda/${var.lambda_name}"
+  retention_in_days = 14
 }
 
 resource "aws_lambda_permission" "allow_ses" {
