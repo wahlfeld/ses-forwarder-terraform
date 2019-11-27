@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "ses-forwarder-dev" {
-  source = "github.com/wahlfeld/ses-forwarder-terraform.git//modules?ref=master"
+  source = "github.com/wahlfeld/ses-forwarder-terraform.git//?ref=master"
 
   account_id         = "${var.account_id}"
   region             = "${var.region}"
