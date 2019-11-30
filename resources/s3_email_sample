@@ -1,0 +1,59 @@
+Return-Path: <email@example.com>
+Received: from mail-qk1-f196.notgoogle.com (mail-qk1-f196.notgoogle.com [209.85.222.196])
+ by inbound-smtp.us-west-2.amazonaws.com with SMTP id ie375gavm6efafe27pnqhqmk8iivfll0253t9qg1;
+ Wed, 27 Nov 2019 21:21:33 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: pass (spfCheck: domain of _spf.notgoogle.com designates 209.85.222.196 as permitted sender) client-ip=209.85.222.196; envelope-from=email@example.com; helo=mail-qk1-f196.notgoogle.com;
+Authentication-Results: amazonses.com;
+ spf=pass (spfCheck: domain of _spf.notgoogle.com designates 209.85.222.196 as permitted sender) client-ip=209.85.222.196; envelope-from=email@example.com; helo=mail-qk1-f196.notgoogle.com;
+ dkim=pass header.i=@example.com;
+ dmarc=pass header.from=example.com;
+X-SES-RECEIPT: AEFBQUFBQUFBQUFIWlNMYTlIQ0lTa2pYSVdvdE4vMTBhNDhRcHVnbWMyMlorT25xcG1hbGNiSHVYUy9oOXVwUFFCRmJ4VzcyQ01pMEh3NVRLOHhTSTJmRlZiMTBoaXdiL3ZnT3pCNERNdkFLdHNEdzBlRlE2c0wydnVYc2NTY3FtU0pscXg0MmV3WGF3TmxFWHRCYXUwMjdKemRxSWZuUFdISk5EeFlLOGdmSGtUN2JUMHdyYjFjam1adUVBcWxIVVNUSERYU2FaRGxiUERhRzB2dFR0TXNUcGtma0xDREl0N2tSZWdtdTRWQ1BCTUg2MUdhU3E4ZXlCaEp1aVg5STFIUklubWxubVJ3Q2JlazU5ZmJkN3J6dlN3dkwvTGFvb2lNMmxWdXN1dWNnd2RibW5ycklabkE9PQ==
+X-SES-DKIM-SIGNATURE: a=rsa-sha256; q=dns/txt; b=MyOQS2m5vpCMwjMt3GCVmwX8XgG+UbWJYXlhCu9CoDcQSJt323/rZL9Z87KrreCP/f57e5okI2wkuoC/MoPVebdDUJH+R7yK8fL7F5I75kbve3uAB0tNzD6IPiSZuncSoyS0BU2jFs2HKPnmHB1jW5pLdFsBav9LSPFJUJaXlf4=; c=relaxed/simple; s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1574889693; v=1; bh=JRhL4EAcLRQ69VcaiLRQm4a/d2AOrPmJlmjECnQiWQ8=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;
+Received: by mail-qk1-f196.notgoogle.com with SMTP id d202so12556860qkb.1;
+        Wed, 27 Nov 2019 13:21:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=example.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=JRhL4EAcLRQ69VcaiLRQm4a/d2AOrPmJlmjECnQiWQ8=;
+        b=NCPd2Ia4eEARhcyAPaKS5/u9o/TNkPllrOqTml2ap/cBUf1lmppj69Jk+LcPPyM6fw
+         tC0/i93VLSb/CIHjsDjUAVbhFoJdVMpa5b06bdfo22+4tW6SfTOzYJUNzwZx6QuuDVvN
+         eTLWMJhJXSo1AlF3wng4A33oQADGQiconhfjbvdG0S3gF2xmdSccbK8OvgJENnBtvNnF
+         Z+TyiCROTWpgQwWVleseEeGkyvIOOnyq4LgqXDe9iw8JiLeFZ2DJkaL4C2Nsi0HHtXgC
+         pN45XBFjLN5qtcnp3tfv0Qm65P+2gVfb4vpRJMs3oacxWiUPC/Yz2Y3oE7iUV43dDw2b
+         JXSA==
+X-notgoogle-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=JRhL4EAcLRQ69VcaiLRQm4a/d2AOrPmJlmjECnQiWQ8=;
+        b=NvYU/8Hg4U3tUw2aNxe1Hc5+BWtARD6LkeLWib73F+7/Aj33lfW6VDRJj5fsgCn1uJ
+         jpBmyx8Bb2yqGATniklWflzM23lANyvj3pVa1s4N8t/XjTPmFWz4+D9yOeEWXtCaFMhC
+         bN9wJxx4UPA7zg47c3o9Uhp7P4fwWkvYeSl2wefzcQ/K8GTTCWa2zoWC4eLgXlaLfg31
+         mH62FmyBx8AqZrkZUkIjVi9g1rbdD7yH8Raxoxxd14/dgM2oQZRFbwBe625XNwljwgJl
+         VDp1R6b1Gp6B/oPINe8bD01hr5agkL5oSl0JnemsuQbWBE7H4Ovqx/060qNlmt0pN5xy
+         VG2g==
+X-Gm-Message-State: APjAAAXSD4kter6S13WEhCujYhP0VfkM8UNbMfmPvze5RykPEqYfgeiU
+	8nil4y1ttAtUE25fwhLBBqdMI5OcjM+vThT+KPcFjQ==
+X-notgoogle-Smtp-Source: APXvYqwKB6DAj5ClOryWFCOCdu5utV/SDy4GaRP1uqqvHaWpiqDRQ1r6p0H0t4W0iM61/ZI5fXS7QOHHX+BnyrmJImE=
+X-Received: by 2002:a37:9c0f:: with SMTP id f15mr6730877qke.297.1574889692090;
+ Wed, 27 Nov 2019 13:21:32 -0800 (PST)
+MIME-Version: 1.0
+From: John Smith <email@example.com>
+Date: Wed, 27 Nov 2019 21:21:21 +0000
+Message-ID: <CAADRH0-RMChjJZvLpzZuPn_0v2TrYwHzX6Ck0RBzUcq=zc1owQ@mail.example.com>
+Subject: Example Subject
+To: john@example.com, smith@example.com, me@example.com
+Content-Type: multipart/alternative; boundary="000000000000a8533905985a9444"
+
+--000000000000a8533905985a9444
+Content-Type: text/plain; charset="UTF-8"
+
+
+
+--000000000000a8533905985a9444
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr"><br></div>
+
+--000000000000a8533905985a9444--
