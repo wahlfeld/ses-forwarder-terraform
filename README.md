@@ -32,24 +32,30 @@ Source: https://medium.com/@ashan.fernando/forwarding-emails-to-your-inbox-using
 * The steps above will set up a serverless mailbox for one email. You can copy and paste the example folder and repeat the steps to create multiple mailboxes (make sure your change the Terraform backend key).
 * The `sns_email_address` variable is the email where error notifications will be sent to, so if you're administering several mailboxes you would keep this address the same for each one.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | ~> 0.13.0 |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| account\_id | The AWS account ID | `any` | n/a | yes |
-| bucket\_name | The name of the S3 bucket where emails will be stored | `any` | n/a | yes |
-| cloudwatch\_alarm | The name of the CloudWatch alarm monitoring the Lambda function | `any` | n/a | yes |
-| cloudwatch\_metric | The name of the metric used for detecting Lambda runtime errors | `any` | n/a | yes |
-| lambda\_name | The name of the Lambda function | `any` | n/a | yes |
-| lambda\_recipient | Where the Lambda function will send/forward the sent mail to | `any` | n/a | yes |
-| lambda\_role\_name | The name of the IAM role used by the Lambda function | `any` | n/a | yes |
-| mail\_s3\_prefix | Folder prefix where emails will be stored e.g. /mail | `any` | n/a | yes |
+| account\_id | The AWS account ID | `string` | n/a | yes |
+| bucket\_name | The name of the S3 bucket where emails will be stored | `string` | n/a | yes |
+| cloudwatch\_alarm | The name of the CloudWatch alarm monitoring the Lambda function | `string` | n/a | yes |
+| cloudwatch\_metric | The name of the metric used for detecting Lambda runtime errors | `string` | n/a | yes |
+| lambda\_name | The name of the Lambda function | `string` | n/a | yes |
+| lambda\_recipient | Where the Lambda function will send/forward the sent mail to | `string` | n/a | yes |
+| lambda\_role\_name | The name of the IAM role used by the Lambda function | `string` | n/a | yes |
+| mail\_s3\_prefix | Folder prefix where emails will be stored e.g. /mail | `string` | n/a | yes |
 | region | Must be either us-west-2, us-east-1 or eu-west-1 (where SES receiving is) | `string` | `"us-west-2"` | no |
-| ses\_mail\_recipient | The email address that the sender used | `any` | n/a | yes |
-| ses\_rule\_name | The name of the SES rule that invokes the Lambda function | `any` | n/a | yes |
-| ses\_set\_name | The name of the active Rule Set in SES which you have already configured | `any` | n/a | yes |
-| sns\_display\_name | The friendly name of the SNS topic | `any` | n/a | yes |
-| sns\_email\_address | The email address used to send error notifications to | `any` | n/a | yes |
+| ses\_mail\_recipient | The email address that the sender used | `string` | n/a | yes |
+| ses\_rule\_name | The name of the SES rule that invokes the Lambda function | `string` | n/a | yes |
+| ses\_set\_name | The name of the active Rule Set in SES which you have already configured | `string` | n/a | yes |
+| sns\_display\_name | The friendly name of the SNS topic | `string` | n/a | yes |
+| sns\_email\_address | The email address used to send error notifications to | `string` | n/a | yes |
 | sns\_protocol | The SNS protocol | `string` | `"email"` | no |
 
 ## Limitations

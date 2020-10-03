@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "iam_policy_attachment" {
 }
 
 data "template_file" "iam_policy" {
-  template = file("${path.module}/resources/iam_policy.json")
+  template = file("${path.module}/local/iam_policy.json")
   vars = {
     account_id       = var.account_id
     region           = var.region
@@ -42,8 +42,8 @@ data "template_file" "iam_policy" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_file = "${path.module}/resources/index.js"
-  output_path = "${path.module}/resources/lambda.zip"
+  source_file = "${path.module}/local/index.js"
+  output_path = "${path.module}/local/lambda.zip"
 }
 
 resource "aws_lambda_function" "ses_forwarder" {

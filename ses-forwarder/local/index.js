@@ -49,16 +49,19 @@ var defaultConfig = {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.parseEvent = function(data) {
+
+exports.parseEvent = function (data) {
   // Validate characteristics of a SES event record.
   if (!data.event ||
-      !data.event.hasOwnProperty('Records') ||
-      data.event.Records.length !== 1 ||
-      !data.event.Records[0].hasOwnProperty('eventSource') ||
-      data.event.Records[0].eventSource !== 'aws:ses' ||
-      data.event.Records[0].eventVersion !== '1.0') {
-    data.log({message: "parseEvent() received invalid SES message:",
-      level: "error", event: JSON.stringify(data.event)});
+    !data.event.hasOwnProperty('Records') ||
+    data.event.Records.length !== 1 ||
+    !data.event.Records[0].hasOwnProperty('eventSource') ||
+    data.event.Records[0].eventSource !== 'aws:ses' ||
+    data.event.Records[0].eventVersion !== '1.0') {
+    data.log({
+      message: "parseEvent() received invalid SES message:",
+      level: "error", event: JSON.stringify(data.event)
+    });
     return Promise.reject(new Error('Error: Received invalid SES message.'));
   }
 
@@ -74,10 +77,11 @@ exports.parseEvent = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.transformRecipients = function(data) {
+
+exports.transformRecipients = function (data) {
   var newRecipients = [];
   data.originalRecipients = data.recipients;
-  data.recipients.forEach(function(origEmail) {
+  data.recipients.forEach(function (origEmail) {
     var origEmailKey = origEmail.toLowerCase();
     if (data.config.forwardMapping.hasOwnProperty(origEmailKey)) {
       newRecipients = newRecipients.concat(
@@ -94,7 +98,7 @@ exports.transformRecipients = function(data) {
         origEmailUser = origEmailKey.slice(0, pos);
       }
       if (origEmailDomain &&
-          data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
+        data.config.forwardMapping.hasOwnProperty(origEmailDomain)) {
         newRecipients = newRecipients.concat(
           data.config.forwardMapping[origEmailDomain]);
         data.originalRecipient = origEmail;
@@ -108,9 +112,11 @@ exports.transformRecipients = function(data) {
   });
 
   if (!newRecipients.length) {
-    data.log({message: "Finishing process. No new recipients found for " +
-      "original destinations: " + data.originalRecipients.join(", "),
-      level: "info"});
+    data.log({
+      message: "Finishing process. No new recipients found for " +
+        "original destinations: " + data.originalRecipients.join(", "),
+      level: "info"
+    });
     return data.callback();
   }
 
@@ -125,12 +131,15 @@ exports.transformRecipients = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.fetchMessage = function(data) {
+
+exports.fetchMessage = function (data) {
   // Copying email object to ensure read permission
-  data.log({level: "info", message: "Fetching email at s3://" +
-    data.config.emailBucket + '/' + data.config.emailKeyPrefix +
-    data.email.messageId});
-  return new Promise(function(resolve, reject) {
+  data.log({
+    level: "info", message: "Fetching email at s3://" +
+      data.config.emailBucket + '/' + data.config.emailKeyPrefix +
+      data.email.messageId
+  });
+  return new Promise(function (resolve, reject) {
     data.s3.copyObject({
       Bucket: data.config.emailBucket,
       CopySource: data.config.emailBucket + '/' + data.config.emailKeyPrefix +
@@ -139,10 +148,12 @@ exports.fetchMessage = function(data) {
       ACL: 'private',
       ContentType: 'text/plain',
       StorageClass: 'STANDARD'
-    }, function(err) {
+    }, function (err) {
       if (err) {
-        data.log({level: "error", message: "copyObject() returned error:",
-          error: err, stack: err.stack});
+        data.log({
+          level: "error", message: "copyObject() returned error:",
+          error: err, stack: err.stack
+        });
         return reject(
           new Error("Error: Could not make readable copy of email."));
       }
@@ -151,10 +162,12 @@ exports.fetchMessage = function(data) {
       data.s3.getObject({
         Bucket: data.config.emailBucket,
         Key: data.config.emailKeyPrefix + data.email.messageId
-      }, function(err, result) {
+      }, function (err, result) {
         if (err) {
-          data.log({level: "error", message: "getObject() returned error:",
-            error: err, stack: err.stack});
+          data.log({
+            level: "error", message: "getObject() returned error:",
+            error: err, stack: err.stack
+          });
           return reject(
             new Error("Error: Failed to load message body from S3."));
         }
@@ -173,7 +186,8 @@ exports.fetchMessage = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.processMessage = function(data) {
+
+exports.processMessage = function (data) {
   var match = data.emailData.match(/^((?:.+\r?\n)*)(\r?\n(?:.*\s+)*)/m);
   var header = match && match[1] ? match[1] : data.emailData;
   var body = match && match[2] ? match[2] : '';
@@ -184,10 +198,12 @@ exports.processMessage = function(data) {
     var from = match && match[1] ? match[1] : '';
     if (from) {
       header = header + 'Reply-To: ' + from;
-      data.log({level: "info", message: "Added Reply-To address of: " + from});
+      data.log({ level: "info", message: "Added Reply-To address of: " + from });
     } else {
-      data.log({level: "info", message: "Reply-To address not added because " +
-       "From address was not properly extracted."});
+      data.log({
+        level: "info", message: "Reply-To address not added because " +
+          "From address was not properly extracted."
+      });
     }
   }
 
@@ -196,14 +212,14 @@ exports.processMessage = function(data) {
   // recipient (which is a verified domain)
   header = header.replace(
     /^From: (.*(?:\r?\n\s+.*)*)/mg,
-    function(match, from) {
+    function (match, from) {
       var fromText;
       if (data.config.fromEmail) {
         fromText = 'From: ' + from.replace(/<(.*)>/, '').trim() +
-        ' <' + data.config.fromEmail + '>';
+          ' <' + data.config.fromEmail + '>';
       } else {
         fromText = 'From: ' + from.replace('<', 'at ').replace('>', '') +
-        ' <' + data.originalRecipient + '>';
+          ' <' + data.originalRecipient + '>';
       }
       return fromText;
     });
@@ -212,7 +228,7 @@ exports.processMessage = function(data) {
   if (data.config.subjectPrefix) {
     header = header.replace(
       /^Subject: (.*)/mg,
-      function(match, subject) {
+      function (match, subject) {
         return 'Subject: ' + data.config.subjectPrefix + subject;
       });
   }
@@ -248,7 +264,8 @@ exports.processMessage = function(data) {
  *
  * @return {object} - Promise resolved with data.
  */
-exports.sendMessage = function(data) {
+
+exports.sendMessage = function (data) {
   var params = {
     Destinations: data.recipients,
     Source: data.originalRecipient,
@@ -256,18 +273,24 @@ exports.sendMessage = function(data) {
       Data: data.emailData
     }
   };
-  data.log({level: "info", message: "sendMessage: Sending email via SES. " +
-    "Original recipients: " + data.originalRecipients.join(", ") +
-    ". Transformed recipients: " + data.recipients.join(", ") + "."});
-  return new Promise(function(resolve, reject) {
-    data.ses.sendRawEmail(params, function(err, result) {
+  data.log({
+    level: "info", message: "sendMessage: Sending email via SES. " +
+      "Original recipients: " + data.originalRecipients.join(", ") +
+      ". Transformed recipients: " + data.recipients.join(", ") + "."
+  });
+  return new Promise(function (resolve, reject) {
+    data.ses.sendRawEmail(params, function (err, result) {
       if (err) {
-        data.log({level: "error", message: "sendRawEmail() returned error.",
-          error: err, stack: err.stack});
+        data.log({
+          level: "error", message: "sendRawEmail() returned error.",
+          error: err, stack: err.stack
+        });
         return reject(new Error('Error: Email sending failed.'));
       }
-      data.log({level: "info", message: "sendRawEmail() successful.",
-        result: result});
+      data.log({
+        level: "info", message: "sendRawEmail() successful.",
+        result: result
+      });
       resolve(data);
     });
   });
@@ -283,15 +306,16 @@ exports.sendMessage = function(data) {
  * @param {object} overrides - Overrides for the default data, including the
  * configuration, SES object, and S3 object.
  */
-exports.handler = function(event, context, callback, overrides) {
+
+exports.handler = function (event, context, callback, overrides) {
   var steps = overrides && overrides.steps ? overrides.steps :
-  [
-    exports.parseEvent,
-    exports.transformRecipients,
-    exports.fetchMessage,
-    exports.processMessage,
-    exports.sendMessage
-  ];
+    [
+      exports.parseEvent,
+      exports.transformRecipients,
+      exports.fetchMessage,
+      exports.processMessage,
+      exports.sendMessage
+    ];
   var data = {
     event: event,
     callback: callback,
@@ -300,22 +324,24 @@ exports.handler = function(event, context, callback, overrides) {
     log: overrides && overrides.log ? overrides.log : console.log,
     ses: overrides && overrides.ses ? overrides.ses : new AWS.SES(),
     s3: overrides && overrides.s3 ?
-      overrides.s3 : new AWS.S3({signatureVersion: 'v4'})
+      overrides.s3 : new AWS.S3({ signatureVersion: 'v4' })
   };
   Promise.series(steps, data)
-    .then(function(data) {
-      data.log({level: "info", message: "Process finished successfully."});
+    .then(function (data) {
+      data.log({ level: "info", message: "Process finished successfully." });
       return data.callback();
     })
-    .catch(function(err) {
-      data.log({level: "error", message: "Step returned error: " + err.message,
-        error: err, stack: err.stack});
+    .catch(function (err) {
+      data.log({
+        level: "error", message: "Step returned error: " + err.message,
+        error: err, stack: err.stack
+      });
       return data.callback(new Error("Error: Step returned error."));
     });
 };
 
-Promise.series = function(promises, initValue) {
-  return promises.reduce(function(chain, promise) {
+Promise.series = function (promises, initValue) {
+  return promises.reduce(function (chain, promise) {
     if (typeof promise !== 'function') {
       return Promise.reject(new Error("Error: Invalid promise item: " +
         promise));
