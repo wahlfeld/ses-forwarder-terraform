@@ -9,7 +9,6 @@ data "template_file" "cloudformation_sns_stack" {
 resource "aws_cloudformation_stack" "sns_topic" {
   name          = var.lambda_name
   template_body = data.template_file.cloudformation_sns_stack.rendered
-  tags = merge(
-    map("Name", var.lambda_name)
-  )
+
+  tags = merge(map("Name", var.lambda_name), local.common_tags)
 }

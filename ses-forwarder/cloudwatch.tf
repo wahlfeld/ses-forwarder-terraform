@@ -24,4 +24,6 @@ resource "aws_cloudwatch_metric_alarm" "ses-forwarder-alarm" {
   datapoints_to_alarm = "1"
   treat_missing_data  = "notBreaching"
   alarm_actions       = [aws_cloudformation_stack.sns_topic.outputs["ARN"]]
+
+  tags = merge(local.common_tags, {})
 }

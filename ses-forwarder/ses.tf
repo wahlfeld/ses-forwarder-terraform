@@ -4,6 +4,7 @@ resource "aws_ses_receipt_rule" "dev_rule" {
     aws_lambda_function.ses_forwarder,
     aws_lambda_permission.allow_ses
   ]
+
   name          = var.ses_rule_name
   rule_set_name = var.ses_set_name
   recipients    = [var.ses_mail_recipient]
@@ -20,6 +21,5 @@ resource "aws_ses_receipt_rule" "dev_rule" {
     function_arn    = aws_lambda_function.ses_forwarder.arn
     invocation_type = "Event"
     position        = 2
-
   }
 }

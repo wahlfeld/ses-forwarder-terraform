@@ -14,6 +14,8 @@ resource "aws_iam_role" "lambda_iam_role" {
   ]
 }
 EOF
+
+  tags = merge(local.common_tags, {})
 }
 
 resource "aws_iam_policy" "iam_policy" {
@@ -26,6 +28,7 @@ resource "aws_iam_role_policy_attachment" "iam_policy_attachment" {
     aws_iam_role.lambda_iam_role,
     aws_iam_policy.iam_policy
   ]
+
   role       = aws_iam_role.lambda_iam_role.name
   policy_arn = aws_iam_policy.iam_policy.arn
 }
@@ -66,11 +69,15 @@ resource "aws_lambda_function" "ses_forwarder" {
       region             = var.region
     }
   }
+
+  tags = merge(local.common_tags, {})
 }
 
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/${var.lambda_name}"
   retention_in_days = 14
+
+  tags = merge(local.common_tags, {})
 }
 
 resource "aws_lambda_permission" "allow_ses" {
