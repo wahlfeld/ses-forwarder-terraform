@@ -15,7 +15,7 @@ Source: https://medium.com/@ashan.fernando/forwarding-emails-to-your-inbox-using
 ## Prerequisites
 
 * You have a domain in AWS
-* You have a validated your domain in AWS SES
+* You have a verified your domain in AWS SES (including DKIM)
 * If you have not configured inbound email handling, create a new Rule Set. Otherwise, you can use an existing one.
 * You have configured the DNS MX record for your domain to point to the email receiving SES endpoint e.g. `inbound-smtp.us-west-2.amazonaws.com`
 * Know what Terraform is
