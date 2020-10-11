@@ -26,11 +26,12 @@ Source: https://medium.com/@ashan.fernando/forwarding-emails-to-your-inbox-using
 1. Create a Terraform backend S3 bucket to store your state files
 2. Copy and paste the `example` folder somewhere on your computer
 3. Configure `backend.tf` to point at the S3 bucket you just created
-4. Configure `terraform.tfvars` as per the variable descriptions in `variables.tf`
+4. Configure `terraform.tfvars` as per the input descriptions in `inputs.tf`
 5.  Run `terraform init && terraform apply`
 
 * The steps above will set up a serverless mailbox for one email. You can copy and paste the example folder and repeat the steps to create multiple mailboxes (make sure your change the Terraform backend key).
 * The `sns_email_address` variable is the email where error notifications will be sent to, so if you're administering several mailboxes you would keep this address the same for each one.
+* You will need to confirm SNS subscription notifications will work.
 
 ## Requirements
 
