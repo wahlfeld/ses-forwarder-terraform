@@ -2,8 +2,9 @@ provider "aws" {
   region = var.region
 }
 
-module "ses-forwarder-dev" {
-  source = "github.com/wahlfeld/ses-forwarder-terraform.git//ses-terraform?ref=master"
+module "ses-forwarder" {
+  # source = "github.com/wahlfeld/ses-forwarder-terraform.git//ses-terraform?ref=master"
+  source = "../ses-forwarder" // local
 
   account_id         = var.account_id
   region             = var.region
