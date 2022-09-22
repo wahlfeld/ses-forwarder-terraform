@@ -1,6 +1,4 @@
 terraform {
-  required_version = "~> 0.13.0"
-
   # backend "s3" {
   #   bucket = "terraform-backend"
   #   key    = "ses-forwarder/mailbox-example"
@@ -9,7 +7,8 @@ terraform {
 
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
     }
   }
 }

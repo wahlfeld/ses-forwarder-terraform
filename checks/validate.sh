@@ -15,10 +15,12 @@ workdir=$PWD
 
 cd $workdir/example
 
-terraform init -backend=true
+terraform fmt --recursive ..
+
+terraform init -reconfigure -upgrade -backend=true
 
 terraform validate
 
 terraform plan -out=$workdir/example/tfplan -input=false
 
-terraform-compliance -f $workdir/test/ -p $workdir/example/tfplan
+terraform-compliance -f $workdir/checks/ -p $workdir/example/tfplan

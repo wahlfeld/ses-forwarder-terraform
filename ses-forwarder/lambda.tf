@@ -14,8 +14,6 @@ resource "aws_iam_role" "lambda_iam_role" {
   ]
 }
 EOF
-
-  tags = merge(local.common_tags, {})
 }
 
 resource "aws_iam_policy" "iam_policy" {
@@ -56,7 +54,7 @@ resource "aws_lambda_function" "ses_forwarder" {
   role             = aws_iam_role.lambda_iam_role.arn
   handler          = "index.handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  runtime          = "nodejs10.x"
+  runtime          = "nodejs16.x"
   memory_size      = 256
   timeout          = 30
 
@@ -69,15 +67,11 @@ resource "aws_lambda_function" "ses_forwarder" {
       region             = var.region
     }
   }
-
-  tags = merge(local.common_tags, {})
 }
 
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/${var.lambda_name}"
   retention_in_days = 14
-
-  tags = merge(local.common_tags, {})
 }
 
 resource "aws_lambda_permission" "allow_ses" {

@@ -1,27 +1,47 @@
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
-  acl    = "private"
   policy = data.template_file.bucket_policy.rendered
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
+  lifecycle {
+    ignore_changes = [
+      lifecycle_rule,
+      server_side_encryption_configuration
+    ]
   }
+}
 
-  lifecycle_rule {
-    id      = "two-week-retention"
-    prefix  = var.mail_s3_prefix
-    enabled = true
+resource "aws_s3_bucket_acl" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id     = "two-week-retention"
+    status = "Enabled"
+
+    filter {
+      prefix = var.mail_s3_prefix
+    }
 
     expiration {
       days = 14
     }
   }
+}
 
-  tags = merge(local.common_tags, {})
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    bucket_key_enabled = false
+
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 
 data "template_file" "bucket_policy" {

@@ -79,3 +79,14 @@ variable "cloudwatch_alarm" {
   type        = string
   description = "The name of the CloudWatch alarm monitoring the Lambda function"
 }
+
+locals {
+  tags = {
+    CreatedBy            = "Terraform"
+    ModuleName           = "ses-forwarder"
+    MailboxAddress       = var.ses_mail_recipient
+    MailRecipientAddress = var.lambda_recipient
+    MailRecipientName    = var.sns_display_name
+    AlarmRecipient       = var.sns_email_address
+  }
+}

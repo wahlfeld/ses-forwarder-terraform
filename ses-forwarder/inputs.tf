@@ -58,14 +58,3 @@ variable "cloudwatch_metric" {
 variable "cloudwatch_alarm" {
   type = string
 }
-
-locals {
-  common_tags = {
-    CreatedBy            = "Terraform"
-    ModuleName           = "ses-forwarder"
-    MailboxAddress       = var.ses_mail_recipient
-    MailRecipientAddress = var.lambda_recipient
-    MailRecipientName    = var.sns_display_name
-    AlarmRecipient       = var.sns_email_address
-  }
-}
