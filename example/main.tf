@@ -1,5 +1,5 @@
 module "ses-forwarder" {
-  # source = "github.com/wahlfeld/ses-forwarder-terraform.git//ses-terraform?ref=master"
+  # source = "github.com/wahlfeld/ses-forwarder-terraform.git//ses-forwarder?ref=master"
   source = "../ses-forwarder" // local
 
   account_id         = var.account_id
